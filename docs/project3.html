@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="nb">
+	<head>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1">				
+		<link rel="stylesheet" type="text/css" href="css/style.css" >
+		<title>DigiFab-Ihsan Tawila</title>
+	</head>
+
+	<body>
+		<nav role="navigation">
+		    <a class="home" href="index.html"><img src="photo/home.png" alt="home"/></a>
+		    <section id="myLinks">
+				<a href="project1.html" >2D and 3D project</a>
+				<a href="project2.html" >Arduino</a>
+				<a class="aktiv" href="project3.html" >Raspberry Pi</a>
+				<a href="project4.html" >ESP32</a>
+				<a href="project5.html" >3D printing</a>
+				<a href="project6.html" >Final project</a>
+		    </section>
+		    <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+			<img src="photo/menu.png" alt="home"/>
+		  </a>
+		</nav>
+		
+		
+		<header>
+			<section>
+				<h1 class="overskrift">Welcome to my FabAcademy portfolio</h1>
+				<p>On this page you will find all the projects that I participated in with the DigiFab course. Hope you like it and Please contact
+    				me if you have any questions or comments</p>
+			</section>	
+		</header>
+		
+		
+		<main>
+			<article>
+				<h2>Raspberry Pi</h2>
+				<p>The Raspberry Pi is a device similar to the Arduino, but it is more advanced and need mor power. In addition, it includes a built-in wireless
+				network and Bluetooth, so there are many projects that can be implemented on the Raspberry Pi that may need an Internet connection. One of the most
+				important and most used projects for Raspberry Pi is a simple web server where one can make the website available to the world. The Raspberry Pi 
+				can also broadcast a radio signal by downloading a special library. And many other projects.</p>
+				
+				<p> In this project we will design a simple project consisting of a light sensor in addition to an LCD screen. When you turn on the light, the
+				word "Welcome" appears on the screen, in addition to the clock, and green led will be turn on. in the dark will red led turn on and will write sleep on 
+				screen. I will divide the project into two parts and then merge them.</p>
+			</article>
+	        
+			<article>
+				<h3>COMPONENTS AND SUPPLIES</h3>
+				<ul>
+					<li>Raspberry Pi</li>
+					<li>Potentiometer</li>
+					<li>LCD (Liquid Crystal Display)</li>
+					<li>Capacitore 1μF 3V </li>
+					<li>2 LEDs</li>
+					<li>2 Resistors 220</li>
+					<li>Photoresistor</li>
+					<li>Jumper wires</li>
+				</ul>
+			</article>
+			
+			<article>
+				<h3>First part:</h3>
+				<p>I will divide the project into two parts and then merge them. I will start with the light 
+				sensor and the green/red light. I will connect the cables as shown in the image below.</p>
+				<img src="photo/project3_1.jpg" alt="sensor">
+				
+				<p>As for the code, I will import two libraries (LightSensor, LED from gpiozero lib) and the code will be as follows</p>
+				
+				<pre>from gpiozero import LightSensor,  LED
+sensor = LightSensor(18)
+red = LED(16)
+green = LED(12)
+
+red.on()
+green.off()
+
+while True:
+    sensor.wait_for_light()
+    red.off()
+	green.on()
+
+    sensor.wait_for_dark()
+    red.on()
+	green.off()
+</pre>
+				
+			</article>
+			
+			
+			<article>
+				<h3>Second part:</h3>
+				<p>In this section I will connect the LCD screen as shown in the image</p>
+				<p>As for the code, I will import two libraries (CharLCD from RPLCD and GPIO from RPi) and the code will be as follows</p>
+
+				<img src="photo/project3_2.jpg" alt="sensor">
+				
+				
+				<pre>from RPLCD import CharLCD
+from RPi import GPIO
+
+lcd = CharLCD(numbering_mode=GPIO.BOARD, cols=16, rows=2, pin_rs=37, pin_e=35, pins_data=[33, 31, 29, 23])
+
+lcd.write_string(u'sleep')
+lcd.clear()
+lcd.write_string(u'Hello')	
+</pre>
+				
+			</article>
+			
+			
+			<article>
+				<h3>Finally</h3>
+				<p>We will merge the two sections together so that we have the project ready as follows</p>
+				
+				<img src="photo/project3_3.jpg" alt="sensor">
+				
+				
+				<pre>from gpiozero import LightSensor,  LED
+from RPLCD import CharLCD
+from RPi import GPIO
+
+lcd = CharLCD(numbering_mode=GPIO.BOARD, cols=16, rows=2, pin_rs=37, pin_e=35, pins_data=[33, 31, 29, 23])
+sensor = LightSensor(18)
+red= LED(16)
+green = LED(12)
+red.on()
+green.off()
+lcd.write_string(u'sleep')
+
+while True:
+    sensor.wait_for_light()
+    print("It's light! :)")
+    red.off()
+	green.on()
+    lcd.clear()
+    lcd.write_string(u'Hello')
+
+    sensor.wait_for_dark()
+    print("It's dark :(")
+    red.on()
+	green.off
+    lcd.clear()
+    lcd.write_string(u'sleep')
+
+
+</pre>
+				
+			</article>
+			
+
+
+
+
+			
+			<section>
+				<p> <video width="500px" controls autoplay loop muted preload="none">
+					<source src="photo/project3_test.mp4" type="video/mp4">
+					Sorry!! Your browser doesn't support video technology
+				</video></p>						
+			</section>
+			
+		</main>
+		
+		<footer>
+			<article>
+				<ul>
+					<li>Sosial:</li>
+					<li><a href="#"><img src="photo/fbook.png" alt="facebook" /></a></li>
+					<li><a href="#"><img src="photo/ins.png" alt="instagram" /></a></li>
+					<li><a href="#"><img src="photo/twitter.png" alt="twitter" /></a></li>										
+				</ul>
+				<ul>
+					<li>Kontakt:</li>
+					<li><a href="mailto:ehsan2ila91@gmail.com">ehsan2ila91@gmail.com</a></li>					
+					<li>0047 451 96 228</li>
+					<li>Halden, Norge</li>
+				</ul>
+				<img class="logo" src="photo/logo.png">
+			</article>
+
+			<p class="end">Ihsan Jamal Tawila 	&copy; 2020. E-post: <a class="registrere" href="mailto:ehsan2ila91@gmail.com">ehsan2ila91@gmail.com</a></p>
+		</footer>
+	
+			<script>
+			function myFunction() {
+			  var x = document.getElementById("myLinks");
+			  if (x.style.display === "block") {
+				x.style.display = "none";
+			  } else {
+				x.style.display = "block";
+			  }
+			}
+			</script>
+
+	
+	</body>
+
+</html>

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="nb">
+	<head>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1">				
+		<link rel="stylesheet" type="text/css" href="css/style.css" >
+		<title>DigiFab-Ihsan Tawila</title>
+	</head>
+
+	<body>
+		<nav role="navigation">
+		    <a class="home" href="index.html"><img src="photo/home.png" alt="home"/></a>
+		    <section id="myLinks">
+				<a href="project1.html" >2D and 3D project</a>
+				<a href="project2.html" >Arduino</a>
+				<a href="project3.html" >Raspberry Pi</a>
+				<a class="aktiv" href="project4.html" >ESP32</a>
+				<a href="project5.html" >3D printing</a>
+				<a href="project6.html" >Final project</a>
+		    </section>
+		    <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+			<img src="photo/menu.png" alt="home"/>
+		  </a>
+		</nav>
+		
+		
+		<header>
+			<section>
+				<h1 class="overskrift">Welcome to my FabAcademy portfolio</h1>
+				<p>On this page you will find all the projects that I participated in with the DigiFab course. Hope you like it and Please contact
+    				me if you have any questions or comments</p>
+			</section>	
+		</header>
+		
+		
+		<main>
+			<article>
+				<h2>ESP32</h2>
+				<p>In this project we will be working on an ESP32 which is a microcontroller very similar to Arduino that can be programmed using the Arduino IDE.
+				What distinguishes ESP32 from Arduino is the ability to connect to the Internet (WiFi). ESP32 is used specifically for IoT projects where you need
+				access to the network or need to connect to external devices.</p>
+				
+				<p> In this project, we will make the ESP32 connect to the Internet and then run a motor in two different directions through a computer or mobile 
+				connected to the same network.</p>
+			</article>
+			
+			<article>
+				<h3>COMPONENTS AND SUPPLIES</h3>
+				<ul>
+					<li>ESP32</li>
+					<li>Motor</li>
+					<li>L293D motor driver</li>
+					<li>Jumper wires</li>
+				</ul>
+			</article>
+			
+			<article>
+				<h3>Connecting ESP32 to the WiFi:</h3>
+				<p>First, we will connect the ESP32 to the WiFi network by writing the following code. This code allowed us to connect to the WiFi network mentioned
+				in the code. Then the ISP32 can be a host. Where clients (other devices) can connect to it via IP address and exchange data. In this code, it will print
+				hello world on the client's device when the connection is made between the client and the ESP32. </p>
+				<img src="photo/helloworld.jpg" alt="html">
+								
+				<pre>#include &lt;WiFi.h&gt;
+const char* ssid = "azeez";
+const char* password = "azeez123";
+WiFiServer server(80);
+void setup() {
+  Serial.begin(115200);
+  Serial.print("connecting to");
+  Serial.println(ssid);
+  WiFi.begin(ssid, password);
+  Serial.print("please wait ...");
+  Serial.println("");
+  while (WiFi.status() != WL_CONNECTED){
+    delay(500);
+      Serial.print(".");}
+  Serial.println("WiFi connected."); 
+  Serial.println("IP address:");
+  Se rial.println(WiFi.localIP());
+  server.begin();}
+void loop() {
+  WiFiClient client = server.available();   
+   if (client) {                             
+    Serial.println("New Client.");          
+    String currentLine = "";                
+    while (client.connected()) {            
+      if (client.available()) {             
+        char c = client.read();             
+        Serial.write(c);                    
+        if (c == '\n') {                    
+           if (currentLine.length() == 0) {
+             client.println("HTTP/1.1 200 OK");
+             client.println("Content-type:text/html");
+             client.println();
+             client.print("Hello World");
+             break;}
+        else {currentLine = "";}} 
+      else if (c != '\r') {currentLine += c;}}}
+    client.stop();
+    Serial.println("Client Disconnected.");}}
+</pre>
+				
+			</article>
+			
+			
+			<article>
+				<h3> ESP32, L293D motor driver and the motor</h3>
+				<p>L293D motor driver is a connecting device between the motor and the ESP32 to control the speed and direction of rotation
+				of the motor. Two motors can be connected to this circuit. But in this project we will only connect one motor. We will connect
+				them as shown in the picture.</p>
+
+				<img src="photo/motor.jpeg" alt="motor">
+				
+			</article>
+
+			<article>
+				<h3> Motor controller</h3>
+				<p>After that, we will write the code that will connect to the Internet and control the motor from another device</p>
+
+				<img src="photo/controll.jpg" alt="sensor">
+				
+				<pre>#include <WiFi.h>
+
+const char* ssid = "azeez";
+const char* password = "azeez123";
+const int motorIn1 = 12;  
+const int motorIn2 = 33; 
+WiFiServer server(80);
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(motorIn1,OUTPUT); 
+  pinMode(motorIn2,OUTPUT);
+  delay(10);
+  Serial.println();
+  Serial.println();
+  Serial.print("connecting to");
+  Serial.println(ssid);
+  WiFi.begin(ssid, password);
+
+  while (WiFi.status() != WL_CONNECTED){
+    delay(500);
+      Serial.print(".");}
+      
+      Serial.println("");
+      Serial.println("WiFi connected."); 
+      Serial.println("IP address:");
+      Serial.println(WiFi.localIP());
+      server.begin();
+}
+
+void loop() {
+  WiFiClient client = server.available();   
+   if (client) {                             
+    Serial.println("New Client.");          
+    String currentLine = "";                
+    while (client.connected()) {           
+      if (client.available()) {             
+        char c = client.read();          
+        Serial.write(c);                  
+        if (c == '\n') {                   
+          if (currentLine.length() == 0) {
+            client.println("HTTP/1.1 200 OK");
+            client.println("Content-type:text/html");
+            client.println();
+            client.print("Click <a href=\"/L\">here</a> to run with the clock.<br>");
+            client.print("Click <a href=\"/R\">here</a> to run counterclockwise.<br>");
+            client.print("Click <a href=\"/S\">here</a> to stopp.<br>");
+            client.println(); 
+            break;}
+            else {currentLine = "";}
+        } else if (c != '\r') { 
+          currentLine += c;}
+         if (currentLine.endsWith("GET /L")) {
+            digitalWrite(motorIn1,1); 
+            digitalWrite(motorIn2,0); 
+        }
+        if (currentLine.endsWith("GET /R")) {
+          digitalWrite(motorIn1,0); 
+          digitalWrite(motorIn2,1); 
+          }
+        if (currentLine.endsWith("GET /S")) {
+          digitalWrite(motorIn1,0); 
+          digitalWrite(motorIn2,0); 
+          }}}
+    client.stop();
+    Serial.println("Client Disconnected.");
+  }
+}
+</pre>
+				
+			</article>
+
+
+
+			
+			<section>
+				<p> <video width="500px" controls autoplay loop muted preload="none">
+					<source src="photo/motor.mp4" type="video/mp4">
+					Sorry!! Your browser doesn't support video technology
+				</video></p>						
+			</section>
+			
+		</main>
+		
+		<footer>
+			<article>
+				<ul>
+					<li>Sosial:</li>
+					<li><a href="#"><img src="photo/fbook.png" alt="facebook" /></a></li>
+					<li><a href="#"><img src="photo/ins.png" alt="instagram" /></a></li>
+					<li><a href="#"><img src="photo/twitter.png" alt="twitter" /></a></li>										
+				</ul>
+				<ul>
+					<li>Kontakt:</li>
+					<li><a href="mailto:ehsan2ila91@gmail.com">ehsan2ila91@gmail.com</a></li>					
+					<li>0047 451 96 228</li>
+					<li>Halden, Norge</li>
+				</ul>
+				<img class="logo" src="photo/logo.png">
+			</article>
+
+			<p class="end">Ihsan Jamal Tawila 	&copy; 2020. E-post: <a class="registrere" href="mailto:ehsan2ila91@gmail.com">ehsan2ila91@gmail.com</a></p>
+		</footer>
+	
+			<script>
+			function myFunction() {
+			  var x = document.getElementById("myLinks");
+			  if (x.style.display === "block") {
+				x.style.display = "none";
+			  } else {
+				x.style.display = "block";
+			  }
+			}
+			</script>
+
+	
+	</body>
+
+</html>

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="nb">
+	<head>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1">				
+		<link rel="stylesheet" type="text/css" href="css/style.css" >
+		<title>DigiFab-Ihsan Tawila</title>
+	</head>
+
+	<body>
+		<nav role="navigation">
+		    <a class="home" href="index.html"><img src="photo/home.png" alt="home"/></a>
+		    <section id="myLinks">
+				<a href="project1.html" >2D and 3D project</a>
+				<a class="aktiv" href="project2.html" >Arduino</a>
+				<a href="project3.html" >Raspberry Pi</a>
+				<a href="project4.html" >ESP32</a>
+				<a href="project5.html" >3D printing</a>
+				<a href="project6.html" >Final project</a>
+		    </section>
+		    <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+			<img src="photo/menu.png" alt="home"/>
+		  </a>
+		</nav>
+		
+		
+		<header>
+			<section>
+				<h1 class="overskrift">Welcome to my FabAcademy portfolio</h1>
+				<p>On this page you will find all the projects that I participated in with the DigiFab course. Hope you like it and Please contact
+    				me if you have any questions or comments</p>
+			</section>	
+		</header>
+		
+		
+		<main>
+			<article>
+				<h2>Arduino</h2>
+				<p>In this project I will make a simple heat alarm using Arduino. This alarm is a temperature sensor with a screen that shows the temperature, 
+				In addition to a piezo (a device that makes noise and vibration) it makes noise when the temperature rises more than 24, for example. 
+				I will explain in detail how to connect the tools with the code I wrote.</p>
+			</article>
+			
+			<article>
+				<h3>COMPONENTS AND SUPPLIES</h3>
+				<ul>
+					<li>Arduino</li>
+					<li>Temperature sensor</li>
+					<li>Potentiometer</li>
+					<li>LCD (Liquid Crystal Display)</li>
+					<li>Piezo</li>
+					<li>Jumper wires</li>
+				</ul>
+			</article>
+			
+			
+			<article>
+				<h3>Sensor:</h3>
+				<p>First we connect the temperature sensor as in the picture below. We calculate the temperature by reading the values from the sensor and converting 
+				them to volts, then converting volts to temperature using the following law (volt = (5.0 / 1024.0) * value), (temp = (volt - 0.5) * 100). We can print 
+				the temperature on the computer. Here is the code and some pictures for clarification.</p>
+				
+				<pre>#define sensor A0
+int value = 0;
+float volt = 0; 
+int temp = 0;
+
+void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+value = analogRead(sensor);
+volt = (5.0 / 1024.0) * value;
+temp = (volt - 0.5) * 100;
+Serial.print("temp = ");
+Serial.print(temp);
+Serial.println(" C");
+}</pre>
+				<img src="photo/sensor.jpg" alt="sensor">
+				
+			</article>
+			
+			
+			<article>
+				<h3>Screen</h3>
+				<p>second, we connect the screen to the Arduino, as in the picture below. And we write the code so that the temperature appears on the screen in the
+				form (Temp = - - C). When the temperature becomes more than 24, a warning word will appear on the screen.</p>
+				<pre>#include &lt;LiquidCrystal.h&gt;
+
+const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+
+void setup() {
+  lcd.begin(16, 2);
+}
+
+void loop() {
+lcd.setCursor(0,0);
+lcd.print("temp =");
+lcd.setCursor(7,0);
+lcd.print(temp);
+lcd.setCursor(10,0);
+lcd.print(" C");
+
+if (temp &gt;=  24){
+   lcd.setCursor(4,1); 
+   lcd.print("Warning!");
+   delay(500);
+   lcd.clear();
+  }
+}</pre>
+				<img src="photo/screen.jpg" alt="screen">
+			</article>
+			
+			
+			<article>
+				<h3>Piezo</h3>
+				<p>Third, we connect the piezo as in the picture below. When the temperature is between 22 and 24, the device emits an intermittent tone, and when it 
+				is more than 24, the device emits a long tone that does not stop until the temperature drops below 24 g. To do this, we write the following code</p>
+				<pre>void setup() {
+}
+
+void loop() {
+if(temp &lt;= 22){
+   noTone(8);
+  }
+  else if (temp &gt; 22 &amp;&amp; temp &lt; 24){
+   tone(8, 300);
+   delay(100);
+   noTone(8);
+   delay(100);
+  }
+   else if (temp &gt;=  24){
+   tone(8, 300);  
+  }
+}</pre>
+				<img src="photo/piezo.jpg" alt="piezo">
+			</article>
+			
+			<article>
+				<h3>Heat alarm</h3>
+				<p>Finally, the Arduino and the code will look like this:</p>
+				<pre>#include &lt;LiquidCrystal.h&gt;
+
+#define sensor A0
+int value = 0;
+float volt = 0; 
+int temp = 0;
+const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+
+void setup() {
+  lcd.begin(16, 2);
+  Serial.begin(9600);
+}
+
+void loop() {
+value = analogRead(sensor);
+volt = (5.0 / 1024.0) * value;
+temp = (volt - 0.5) * 100;
+delay (1000);
+lcd.setCursor(0,0);
+lcd.print("temp =");
+lcd.setCursor(7,0);
+lcd.print(temp);
+lcd.setCursor(10,0);
+lcd.print(" C");
+Serial.print("temp = ");
+Serial.print(temp);
+Serial.println(" C");
+
+if(temp &lt;= 22){
+   noTone(8);
+  }
+  else if (temp &gt; 22 &amp;&amp; temp &lt; 24){
+   tone(8, 300);
+   delay(100);
+   noTone(8);
+   delay(100);
+  }
+   else if (temp &gt;=  24){
+   tone(8, 300);  
+   lcd.setCursor(4,1); 
+   lcd.print("Warning!");
+   delay(500);
+   lcd.clear();
+  }
+}</pre>
+				<img src="photo/finally.jpg" alt="finally">
+			</article>
+			
+			<section>
+				<p> <video width="500px" controls autoplay loop muted preload="none">
+					<source src="photo/alarmtest.mp4" type="video/mp4">
+					Sorry!! Your browser doesn't support video technology
+				</video></p>						
+			</section>
+			
+		</main>
+		
+		<footer>
+			<article>
+				<ul>
+					<li>Sosial:</li>
+					<li><a href="#"><img src="photo/fbook.png" alt="facebook" /></a></li>
+					<li><a href="#"><img src="photo/ins.png" alt="instagram" /></a></li>
+					<li><a href="#"><img src="photo/twitter.png" alt="twitter" /></a></li>										
+				</ul>
+				<ul>
+					<li>Kontakt:</li>
+					<li><a href="mailto:ehsan2ila91@gmail.com">ehsan2ila91@gmail.com</a></li>					
+					<li>0047 451 96 228</li>
+					<li>Halden, Norge</li>
+				</ul>
+				<img class="logo" src="photo/logo.png">
+			</article>
+
+			<p class="end">Ihsan Jamal Tawila 	&copy; 2020. E-post: <a class="registrere" href="mailto:ehsan2ila91@gmail.com">ehsan2ila91@gmail.com</a></p>
+		</footer>
+	
+			<script>
+			function myFunction() {
+			  var x = document.getElementById("myLinks");
+			  if (x.style.display === "block") {
+				x.style.display = "none";
+			  } else {
+				x.style.display = "block";
+			  }
+			}
+			</script>
+
+	
+	</body>
+
+</html>
